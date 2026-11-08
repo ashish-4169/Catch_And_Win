@@ -442,18 +442,274 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     ctx.translate(item.x, item.y);
     ctx.rotate(item.rotation);
 
-    // Soft subtle shadow under item
-    ctx.fillStyle = 'rgba(32, 35, 31, 0.05)';
+    // Drop shadow
+    ctx.fillStyle = 'rgba(32, 35, 31, 0.08)';
     ctx.beginPath();
-    ctx.arc(0, 3, item.radius * 0.9, 0, Math.PI * 2);
+    ctx.ellipse(1, item.radius * 0.75, item.radius * 0.65, item.radius * 0.22, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Render crisp Emoji glyph
-    ctx.font = `${Math.floor(item.radius * 1.9)}px 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(item.emoji, 0, 2);
+    if (item.type === 'apple') drawApple(ctx, item.radius);
+    else if (item.type === 'banana') drawBanana(ctx, item.radius);
+    else if (item.type === 'star') drawStar(ctx, item.radius);
+    else if (item.type === 'bomb') drawBomb(ctx, item.radius);
 
+    ctx.restore();
+  };
+
+  // ── Apple ──────────────────────────────────────────────────────────────────
+  const drawApple = (ctx: CanvasRenderingContext2D, r: number) => {
+    // Body gradient: vivid red with darker base
+    const bodyGrad = ctx.createRadialGradient(-r * 0.25, -r * 0.3, r * 0.05, 0, 0, r);
+    bodyGrad.addColorStop(0,  '#FF5A4A');   // bright highlight center
+    bodyGrad.addColorStop(0.4,'#E0302A');   // main red
+    bodyGrad.addColorStop(1,  '#8B1A14');   // deep shadow edge
+
+    // Draw body as a slightly squashed circle with indent at top
+    ctx.beginPath();
+    ctx.arc(0, r * 0.08, r * 0.92, 0, Math.PI * 2);
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    // Clean outline
+    ctx.strokeStyle = '#7A1510';
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    // Highlight ellipse (top-left sheen)
+    ctx.save();
+    ctx.globalAlpha = 0.55;
+    const hlGrad = ctx.createRadialGradient(-r * 0.28, -r * 0.32, 0, -r * 0.22, -r * 0.22, r * 0.42);
+    hlGrad.addColorStop(0, 'rgba(255,255,255,0.90)');
+    hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.beginPath();
+    ctx.ellipse(-r * 0.26, -r * 0.28, r * 0.3, r * 0.22, -0.5, 0, Math.PI * 2);
+    ctx.fillStyle = hlGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // Stem
+    ctx.strokeStyle = '#4A3010';
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(0, -r * 0.92);
+    ctx.quadraticCurveTo(r * 0.18, -r * 1.28, r * 0.1, -r * 1.42);
+    ctx.stroke();
+
+    // Leaf
+    ctx.fillStyle = '#3A7D2C';
+    ctx.strokeStyle = '#285A1E';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.save();
+    ctx.translate(r * 0.08, -r * 1.1);
+    ctx.rotate(0.5);
+    ctx.scale(1, 0.55);
+    ctx.arc(r * 0.14, 0, r * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  };
+
+  // ── Banana ─────────────────────────────────────────────────────────────────
+  const drawBanana = (ctx: CanvasRenderingContext2D, r: number) => {
+    // Banana is an arc shape, slightly wider than tall
+    const scale = r / 22;
+
+    ctx.save();
+    ctx.scale(scale, scale);
+
+    // Outer peel shadow path
+    ctx.beginPath();
+    ctx.moveTo(-18, 14);
+    ctx.bezierCurveTo(-22, -2, -10, -26, 8, -24);
+    ctx.bezierCurveTo(24, -22, 28, -6, 20, 10);
+    ctx.bezierCurveTo(16, 18, -6, 22, -18, 14);
+    ctx.closePath();
+    ctx.fillStyle = '#B8820A';
+    ctx.fill();
+    ctx.strokeStyle = '#8A5E05';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Main banana body gradient
+    const banGrad = ctx.createLinearGradient(-10, -24, 10, 14);
+    banGrad.addColorStop(0,   '#FFE566');  // bright top
+    banGrad.addColorStop(0.35,'#FFD21A');  // vivid yellow
+    banGrad.addColorStop(0.75,'#F0B800');  // golden mid
+    banGrad.addColorStop(1,   '#C8900A');  // shadow bottom
+
+    ctx.beginPath();
+    ctx.moveTo(-15, 12);
+    ctx.bezierCurveTo(-19, -2, -8, -24, 7, -22);
+    ctx.bezierCurveTo(21, -20, 25, -5, 18, 9);
+    ctx.bezierCurveTo(14, 16, -5, 20, -15, 12);
+    ctx.closePath();
+    ctx.fillStyle = banGrad;
+    ctx.fill();
+
+    // Centre rib line
+    ctx.strokeStyle = 'rgba(180, 120, 0, 0.45)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(-13, 10);
+    ctx.bezierCurveTo(-16, -2, -6, -20, 6, -19);
+    ctx.bezierCurveTo(18, -18, 21, -4, 15, 8);
+    ctx.stroke();
+
+    // Top-left sheen
+    ctx.save();
+    ctx.globalAlpha = 0.45;
+    const hlGrad = ctx.createLinearGradient(-12, -18, 2, -4);
+    hlGrad.addColorStop(0, 'rgba(255,255,255,0.85)');
+    hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.beginPath();
+    ctx.moveTo(-11, -18);
+    ctx.bezierCurveTo(-14, -8, -6, -6, 0, -12);
+    ctx.bezierCurveTo(-2, -16, -8, -20, -11, -18);
+    ctx.closePath();
+    ctx.fillStyle = hlGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // Tips (dark brown dots at ends)
+    ctx.fillStyle = '#6B4206';
+    ctx.beginPath();
+    ctx.arc(-17, 13, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(7, -22, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  };
+
+  // ── Star ───────────────────────────────────────────────────────────────────
+  const drawStar = (ctx: CanvasRenderingContext2D, r: number) => {
+    const outerR = r;
+    const innerR = r * 0.42;
+    const points = 5;
+
+    // Star path helper
+    const starPath = (ctx: CanvasRenderingContext2D, ox: number, oy: number, o: number, i: number) => {
+      ctx.beginPath();
+      for (let p = 0; p < points * 2; p++) {
+        const ang = (p * Math.PI) / points - Math.PI / 2;
+        const radius = p % 2 === 0 ? o : i;
+        const px = ox + Math.cos(ang) * radius;
+        const py = oy + Math.sin(ang) * radius;
+        p === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+    };
+
+    // Soft outer glow ring
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.fillStyle = '#FFD000';
+    starPath(ctx, 0, 0, outerR * 1.22, innerR * 1.22);
+    ctx.fill();
+    ctx.restore();
+
+    // Shadow layer (slightly offset)
+    ctx.save();
+    ctx.globalAlpha = 0.12;
+    ctx.fillStyle = '#8B6000';
+    starPath(ctx, 1.5, 2, outerR, innerR);
+    ctx.fill();
+    ctx.restore();
+
+    // Main body gradient
+    const starGrad = ctx.createRadialGradient(-outerR * 0.2, -outerR * 0.25, 0, 0, 0, outerR);
+    starGrad.addColorStop(0,   '#FFF176'); // bright centre
+    starGrad.addColorStop(0.35,'#FFD700'); // classic gold
+    starGrad.addColorStop(0.75,'#F0A800'); // golden mid
+    starGrad.addColorStop(1,   '#C47C00'); // deep amber edge
+    starPath(ctx, 0, 0, outerR, innerR);
+    ctx.fillStyle = starGrad;
+    ctx.fill();
+
+    // Outline
+    ctx.strokeStyle = '#9A6000';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Highlight shimmer (top-left point)
+    ctx.save();
+    ctx.globalAlpha = 0.6;
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.beginPath();
+    ctx.ellipse(-outerR * 0.18, -outerR * 0.42, outerR * 0.14, outerR * 0.08, -0.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Small inner sparkle dot
+    ctx.save();
+    ctx.globalAlpha = 0.7;
+    ctx.fillStyle = '#FFFDE0';
+    ctx.beginPath();
+    ctx.arc(-outerR * 0.12, -outerR * 0.15, outerR * 0.09, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  // ── Bomb ───────────────────────────────────────────────────────────────────
+  const drawBomb = (ctx: CanvasRenderingContext2D, r: number) => {
+    // Body gradient: dark charcoal sphere
+    const bodyGrad = ctx.createRadialGradient(-r * 0.25, -r * 0.3, r * 0.04, 0, 0, r);
+    bodyGrad.addColorStop(0,  '#6B6E6A');  // soft highlight
+    bodyGrad.addColorStop(0.3,'#3A3D3B');  // dark charcoal
+    bodyGrad.addColorStop(1,  '#141615');  // near-black edge
+
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    // Clean dark outline
+    ctx.strokeStyle = '#0D0F0E';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Highlight sheen
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    const hlGrad = ctx.createRadialGradient(-r * 0.3, -r * 0.35, 0, -r * 0.22, -r * 0.28, r * 0.46);
+    hlGrad.addColorStop(0, 'rgba(255,255,255,0.80)');
+    hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.beginPath();
+    ctx.ellipse(-r * 0.28, -r * 0.3, r * 0.26, r * 0.18, -0.4, 0, Math.PI * 2);
+    ctx.fillStyle = hlGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // Fuse cord
+    ctx.strokeStyle = '#8B6914';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(r * 0.14, -r * 0.88);
+    ctx.bezierCurveTo(r * 0.5, -r * 1.22, r * 0.1, -r * 1.52, r * 0.3, -r * 1.68);
+    ctx.stroke();
+
+    // Fuse glow spark
+    const sparkGrad = ctx.createRadialGradient(r * 0.3, -r * 1.68, 0, r * 0.3, -r * 1.68, r * 0.22);
+    sparkGrad.addColorStop(0, '#FFF176');
+    sparkGrad.addColorStop(0.4,'#FF9800');
+    sparkGrad.addColorStop(1, 'rgba(255,100,0,0)');
+    ctx.beginPath();
+    ctx.arc(r * 0.3, -r * 1.68, r * 0.22, 0, Math.PI * 2);
+    ctx.fillStyle = sparkGrad;
+    ctx.fill();
+
+    // Tiny white catch-light
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(r * 0.3, -r * 1.68, r * 0.06, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   };
 
