@@ -18,71 +18,51 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
 }) => {
   return (
     <div className="overlay-screen">
-      <div className="modal-card">
-        {/* Banner */}
-        <div className="game-over-tag">TIME'S UP!</div>
+      <div className="game-over-card">
+        <span className="game-tag">Round Finished</span>
+        <h2 className="game-over-title">Game Over</h2>
 
-        <h1 className="game-over-title">Game Over</h1>
-
-        {/* New High Score Celebratory Badge */}
         {isNewHighScore && (
-          <div className="new-record-badge bounce-anim">
-            🎉 NEW STALL RECORD! 🎉
+          <div className="new-best-pill">
+            New Best Score!
           </div>
         )}
 
-        {/* Final Score Display */}
-        <div className="final-score-box">
-          <span className="final-score-label">FINAL SCORE</span>
-          <span className="final-score-num">{stats.score}</span>
-          <span className="final-highscore-sub">All-Time Best: {highScore} pts</span>
+        <div className="final-score-display">
+          <span className="final-score-sub">FINAL SCORE</span>
+          <span className="final-score-value">{stats.score}</span>
+          <span className="final-best-label">Best: {highScore} pts</span>
         </div>
 
-        {/* Stats Breakdown */}
-        <div className="breakdown-card">
-          <h3 className="breakdown-title">Performance Breakdown</h3>
-          <div className="breakdown-grid">
-            <div className="breakdown-item">
-              <span className="breakdown-emoji">🍎</span>
-              <span className="breakdown-name">Apples</span>
-              <span className="breakdown-count">× {stats.applesCaught}</span>
-              <span className="breakdown-subscore">+{stats.applesCaught * 10}</span>
-            </div>
-
-            <div className="breakdown-item">
-              <span className="breakdown-emoji">🍌</span>
-              <span className="breakdown-name">Bananas</span>
-              <span className="breakdown-count">× {stats.bananasCaught}</span>
-              <span className="breakdown-subscore">+{stats.bananasCaught * 15}</span>
-            </div>
-
-            <div className="breakdown-item">
-              <span className="breakdown-emoji">⭐</span>
-              <span className="breakdown-name">Stars</span>
-              <span className="breakdown-count">× {stats.starsCaught}</span>
-              <span className="breakdown-subscore bonus">+{stats.starsCaught * 30}</span>
-            </div>
-
-            <div className="breakdown-item">
-              <span className="breakdown-emoji">💣</span>
-              <span className="breakdown-name">Bombs Hit</span>
-              <span className="breakdown-count">× {stats.bombsCaught}</span>
-              <span className="breakdown-subscore negative">-{stats.bombsCaught * 20}</span>
-            </div>
+        {/* Clean summary row */}
+        <div className="summary-strip">
+          <div className="summary-col">
+            <span className="summary-icon">🍎</span>
+            <span className="summary-val">{stats.applesCaught}</span>
+          </div>
+          <div className="summary-col">
+            <span className="summary-icon">🍌</span>
+            <span className="summary-val">{stats.bananasCaught}</span>
+          </div>
+          <div className="summary-col">
+            <span className="summary-icon">⭐</span>
+            <span className="summary-val">{stats.starsCaught}</span>
+          </div>
+          <div className="summary-col">
+            <span className="summary-icon">💣</span>
+            <span className="summary-val">{stats.bombsCaught}</span>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="actions-row">
-          <button className="primary-action-btn pulse-anim" onClick={onPlayAgain}>
-            <span className="btn-icon">🔄</span> PLAY AGAIN
+        <div className="game-over-actions">
+          <button className="clean-primary-btn" onClick={onPlayAgain}>
+            Play Again
           </button>
-          <button className="secondary-action-btn" onClick={onBackToMenu}>
-            🏠 Main Menu
+          <button className="clean-secondary-btn" onClick={onBackToMenu}>
+            Main Menu
           </button>
         </div>
       </div>
     </div>
   );
 };
-

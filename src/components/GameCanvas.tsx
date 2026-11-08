@@ -394,14 +394,13 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       for (const ft of floatingTextsRef.current) {
         ctx.save();
         ctx.globalAlpha = Math.max(0, ft.alpha);
-        ctx.font = `bold ${Math.floor(22 * ft.scale)}px 'Outfit', 'Inter', -apple-system, sans-serif`;
+        ctx.font = `700 ${Math.floor(20 * ft.scale)}px 'DM Sans', Inter, -apple-system, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // Outer glow/shadow
-        ctx.strokeStyle = '#090d16';
-        ctx.lineWidth = 4;
-        ctx.strokeText(ft.text, ft.x, ft.y);
+        // Soft white backing for crisp contrast on light canvas
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.fillText(ft.text, ft.x, ft.y + 1);
 
         ctx.fillStyle = ft.color;
         ctx.fillText(ft.text, ft.x, ft.y);
@@ -422,36 +421,19 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     };
   }, [isPlaying, onCatch]);
 
-  // Render background details
+  // Render background details - Clean white background with minimal floor line
   const drawGameBackground = (ctx: CanvasRenderingContext2D) => {
-    // Subtle gradient
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
-    bgGrad.addColorStop(0, '#0c1022');
-    bgGrad.addColorStop(0.5, '#131838');
-    bgGrad.addColorStop(1, '#1e1b4b');
-    ctx.fillStyle = bgGrad;
+    // Crisp white background
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Subtle starry dots
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-    for (let i = 0; i < 35; i++) {
-      const sx = (i * 123.7) % CANVAS_WIDTH;
-      const sy = (i * 91.3) % (CANVAS_HEIGHT - 80);
-      const sRadius = (i % 3) + 1;
-      ctx.beginPath();
-      ctx.arc(sx, sy, sRadius, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Floor catch baseline
-    ctx.strokeStyle = 'rgba(99, 102, 241, 0.25)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([8, 6]);
+    // Subtle bottom catch line
+    ctx.strokeStyle = '#E1E3DC';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, CANVAS_HEIGHT - BUCKET_CONFIG.bottomOffset + 6);
     ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT - BUCKET_CONFIG.bottomOffset + 6);
     ctx.stroke();
-    ctx.setLineDash([]);
   };
 
   // Render an individual falling item
@@ -460,24 +442,11 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     ctx.translate(item.x, item.y);
     ctx.rotate(item.rotation);
 
-    // Glowing aura behind item
-    const glow = ctx.createRadialGradient(0, 0, 2, 0, 0, item.radius * 1.5);
-    glow.addColorStop(0, item.glowColor);
-    glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = glow;
+    // Soft subtle shadow under item
+    ctx.fillStyle = 'rgba(32, 35, 31, 0.05)';
     ctx.beginPath();
-    ctx.arc(0, 0, item.radius * 1.5, 0, Math.PI * 2);
+    ctx.arc(0, 3, item.radius * 0.9, 0, Math.PI * 2);
     ctx.fill();
-
-    // Specific extra touches
-    if (item.type === 'star') {
-      // Golden star shine ring
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(0, 0, item.radius * 1.1, 0, Math.PI * 2);
-      ctx.stroke();
-    }
 
     // Render crisp Emoji glyph
     ctx.font = `${Math.floor(item.radius * 1.9)}px 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif`;
@@ -488,7 +457,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     ctx.restore();
   };
 
-  // Render the player-controlled bucket
+  // Render the player-controlled bucket - Clean minimal indie design
   const drawBucket = (
     ctx: CanvasRenderingContext2D,
     x: number,
@@ -498,15 +467,15 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   ) => {
     ctx.save();
 
-    // Soft drop shadow below bucket
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    // Soft subtle shadow below bucket
+    ctx.fillStyle = 'rgba(32, 35, 31, 0.08)';
     ctx.beginPath();
-    ctx.ellipse(x + w / 2, y + h + 8, w * 0.52, 9, 0, 0, Math.PI * 2);
+    ctx.ellipse(x + w / 2, y + h + 6, w * 0.44, 4, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Bucket Body: Rounded Trapezoid
     const topInset = 0;
-    const bottomInset = 14;
+    const bottomInset = 12;
 
     ctx.beginPath();
     ctx.moveTo(x + topInset + 6, y);
@@ -520,49 +489,31 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     ctx.quadraticCurveTo(x + topInset, y, x + topInset + 6, y);
     ctx.closePath();
 
-    // Bucket body gradient
-    const bodyGrad = ctx.createLinearGradient(x, y, x, y + h);
-    bodyGrad.addColorStop(0, BUCKET_CONFIG.colorTop);
-    bodyGrad.addColorStop(1, BUCKET_CONFIG.colorBottom);
-    ctx.fillStyle = bodyGrad;
+    // Clean forest green fill
+    ctx.fillStyle = BUCKET_CONFIG.colorTop;
     ctx.fill();
 
-    // Subtle vertical highlight stripe
-    const highlightGrad = ctx.createLinearGradient(x, y, x + w, y);
-    highlightGrad.addColorStop(0, 'rgba(255, 255, 255, 0.08)');
-    highlightGrad.addColorStop(0.3, 'rgba(255, 255, 255, 0.3)');
-    highlightGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.05)');
-    highlightGrad.addColorStop(1, 'rgba(0, 0, 0, 0.25)');
-    ctx.fillStyle = highlightGrad;
-    ctx.fill();
-
-    // Rim at top
-    const rimHeight = 12;
+    // Top Rim
+    const rimHeight = 10;
     ctx.beginPath();
-    ctx.roundRect(x - 4, y - rimHeight / 2, w + 8, rimHeight, 6);
-    const rimGrad = ctx.createLinearGradient(x, y - rimHeight / 2, x, y + rimHeight / 2);
-    rimGrad.addColorStop(0, '#a5b4fc');
-    rimGrad.addColorStop(0.5, BUCKET_CONFIG.rimColor);
-    rimGrad.addColorStop(1, '#4338ca');
-    ctx.fillStyle = rimGrad;
+    ctx.roundRect(x - 3, y - rimHeight / 2, w + 6, rimHeight, 4);
+    ctx.fillStyle = BUCKET_CONFIG.rimColor;
     ctx.fill();
 
-    // Rim glossy highlight
-    ctx.strokeStyle = '#e0e7ff';
-    ctx.lineWidth = 1.5;
+    // Minimal rim highlight
+    ctx.strokeStyle = BUCKET_CONFIG.highlightColor;
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(x + 2, y - rimHeight / 2 + 2);
     ctx.lineTo(x + w - 2, y - rimHeight / 2 + 2);
     ctx.stroke();
 
-    // Decorative "CATCH" label on bucket
-    ctx.font = "bold 13px 'Outfit', 'Inter', sans-serif";
+    // Clean subtle label
+    ctx.font = "600 11px 'DM Sans', Inter, -apple-system, sans-serif";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(224, 231, 255, 0.9)';
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-    ctx.shadowBlur = 4;
-    ctx.fillText('⚡ CATCH ⚡', x + w / 2, y + h * 0.58);
+    ctx.fillStyle = '#E6EDE2';
+    ctx.fillText('CATCH', x + w / 2, y + h * 0.58);
 
     ctx.restore();
   };
@@ -594,7 +545,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         />
         <div className="webcam-pip-badge">
           <span className={`pip-dot ${handDetected ? 'dot-active' : ''}`}></span>
-          <span>{handDetected ? 'HAND READY' : 'CAMERA ACTIVE'}</span>
+          <span>{handDetected ? 'Hand detected' : 'Camera ready'}</span>
         </div>
       </div>
     </div>

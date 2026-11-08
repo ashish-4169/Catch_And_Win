@@ -10,6 +10,12 @@ interface ScoreBoardProps {
   onToggleMute: () => void;
 }
 
+const formatTimer = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
+
 export const ScoreBoard: React.FC<ScoreBoardProps> = ({
   score,
   timeLeft,
@@ -18,55 +24,55 @@ export const ScoreBoard: React.FC<ScoreBoardProps> = ({
   cameraStatus,
   onToggleMute,
 }) => {
-  const isUrgent = timeLeft <= 10;
+  const isUrgent = timeLeft <= 10 && timeLeft > 0;
+
+  const getCameraLabel = () => {
+    switch (cameraStatus) {
+      case 'connected':
+        return 'Camera ready';
+      case 'requesting':
+        return 'Starting camera...';
+      case 'unavailable':
+        return 'Camera unavailable';
+      default:
+        return 'Camera ready';
+    }
+  };
 
   return (
-    <header className="hud-container">
-      {/* Score Card */}
-      <div className="hud-card score-card">
-        <span className="hud-label">SCORE</span>
-        <span className="hud-value score-val">{score}</span>
+    <header className="top-bar">
+      <div className="top-brand">
+        <h1 className="brand-title">Gesture Catch</h1>
+        {highScore > 0 && (
+          <span className="best-score-badge">Best: {highScore}</span>
+        )}
       </div>
 
-      {/* Timer Card */}
-      <div className={`hud-card timer-card ${isUrgent ? 'timer-urgent' : ''}`}>
-        <span className="hud-label">TIME LEFT</span>
-        <span className="hud-value timer-val">
-          {timeLeft}
-          <span className="hud-unit">s</span>
-        </span>
-      </div>
-
-      {/* High Score Card */}
-      <div className="hud-card highscore-card">
-        <span className="hud-label">BEST</span>
-        <span className="hud-value highscore-val">{highScore}</span>
-      </div>
-
-      {/* Camera Status Badge */}
-      <div className={`hud-card camera-card camera-${cameraStatus}`}>
-        <span className="hud-label">TRACKING</span>
-        <div className="camera-status-row">
-          <span className={`camera-dot dot-${cameraStatus}`}></span>
-          <span className="camera-status-text">
-            {cameraStatus === 'connected' && 'Camera connected'}
-            {cameraStatus === 'unavailable' && 'Camera unavailable'}
-            {cameraStatus === 'requesting' && 'Connecting camera...'}
-            {cameraStatus === 'idle' && 'Ready'}
-          </span>
+      <div className="top-stats">
+        <div className="stat-group">
+          <span className="stat-label">SCORE</span>
+          <span className="stat-value score-number">{score}</span>
         </div>
-      </div>
 
-      {/* Sound Toggle Button */}
-      <button
-        onClick={onToggleMute}
-        className="hud-btn mute-btn"
-        title={isMuted ? 'Unmute Sound' : 'Mute Sound'}
-        aria-label="Toggle Sound"
-      >
-        {isMuted ? '🔇' : '🔊'}
-      </button>
+        <div className={`stat-group ${isUrgent ? 'urgent-timer' : ''}`}>
+          <span className="stat-label">TIME</span>
+          <span className="stat-value timer-number">{formatTimer(timeLeft)}</span>
+        </div>
+
+        <div className={`camera-indicator status-${cameraStatus}`}>
+          <span className="camera-indicator-dot"></span>
+          <span className="camera-indicator-text">{getCameraLabel()}</span>
+        </div>
+
+        <button
+          onClick={onToggleMute}
+          className="audio-toggle-btn"
+          title={isMuted ? 'Unmute Sound' : 'Mute Sound'}
+          aria-label="Toggle Sound"
+        >
+          {isMuted ? '🔇' : '🔊'}
+        </button>
+      </div>
     </header>
   );
 };
-

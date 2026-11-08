@@ -15,77 +15,65 @@ export const CameraInitOverlay: React.FC<CameraInitOverlayProps> = ({
   onBackToMenu,
 }) => {
   return (
-    <div className="overlay-screen camera-init-overlay">
-      <div className="modal-card camera-init-card">
-        {/* Stall Header Badge */}
-        <div className="stall-badge">
-          <span className="badge-dot"></span>
-          GESTURE CATCH • WEBCAM SETUP
-        </div>
+    <div className="overlay-screen">
+      <div className="setup-card">
+        <span className="game-tag">Camera Setup</span>
 
-        {/* Dynamic Status Header */}
-        <div className="cam-status-section">
-          {cameraStatus === 'requesting' && (
-            <div className="status-flow-state state-requesting">
-              <div className="cam-spinner"></div>
-              <h2 className="cam-headline">Starting camera...</h2>
-              <p className="cam-subline">
-                Please click <strong>&quot;Allow&quot;</strong> on your browser&apos;s camera prompt.
-              </p>
-            </div>
-          )}
+        {cameraStatus === 'requesting' && (
+          <div className="setup-state-block">
+            <div className="clean-spinner"></div>
+            <h2 className="setup-title">Starting camera...</h2>
+            <p className="setup-sub">
+              Please allow camera access when prompted by your browser.
+            </p>
+          </div>
+        )}
 
-          {cameraStatus === 'connected' && !handDetected && (
-            <div className="status-flow-state state-connected">
-              <div className="hand-prompt-icon pulse-anim">🖐️</div>
-              <h2 className="cam-headline">Camera connected! Show your hand.</h2>
-              <p className="cam-subline">
-                Show your hand in front of the camera.
-              </p>
-              <div className="hand-detection-box">
-                <span className="detection-pulse"></span>
-                <span>Waiting for hand in view...</span>
-              </div>
-            </div>
-          )}
+        {cameraStatus === 'connected' && !handDetected && (
+          <div className="setup-state-block">
+            <div className="setup-icon">🖐️</div>
+            <h2 className="setup-title">Camera connected! Show your hand.</h2>
+            <p className="setup-sub">
+              Show your hand in front of the camera to begin.
+            </p>
+          </div>
+        )}
 
-          {cameraStatus === 'connected' && handDetected && (
-            <div className="status-flow-state state-detected">
-              <div className="hand-prompt-icon success-bounce">✨🖐️✨</div>
-              <h2 className="cam-headline text-success">Hand detected! Get ready.</h2>
-              <p className="cam-subline">
-                Locking on to your hand gestures...
-              </p>
-            </div>
-          )}
+        {cameraStatus === 'connected' && handDetected && (
+          <div className="setup-state-block">
+            <div className="setup-icon icon-success">✨</div>
+            <h2 className="setup-title setup-success">Hand detected! Get ready.</h2>
+            <p className="setup-sub">
+              Starting countdown...
+            </p>
+          </div>
+        )}
 
-          {cameraStatus === 'unavailable' && (
-            <div className="status-flow-state state-unavailable">
-              <div className="cam-warn-icon">⚠️</div>
-              <h2 className="cam-headline text-warning">
-                Camera unavailable. You can play using mouse controls.
-              </h2>
-              <p className="cam-subline">
-                Webcam permission was denied or no camera was found. Don&apos;t worry, mouse controls are fully supported!
-              </p>
-            </div>
-          )}
-        </div>
+        {cameraStatus === 'unavailable' && (
+          <div className="setup-state-block">
+            <div className="setup-icon icon-warning">⚠️</div>
+            <h2 className="setup-title setup-warning">
+              Camera unavailable. You can play using mouse controls.
+            </h2>
+            <p className="setup-sub">
+              Camera access was denied or no webcam was detected.
+            </p>
+          </div>
+        )}
 
-        {/* Action Buttons */}
-        <div className="actions-row">
+        <div className="setup-actions">
           {cameraStatus === 'unavailable' ? (
-            <button className="primary-action-btn pulse-anim" onClick={onPlayWithMouse}>
-              <span className="btn-icon">🖱️</span> Continue with Mouse Controls
+            <button className="clean-primary-btn" onClick={onPlayWithMouse}>
+              Play with Mouse
             </button>
           ) : (
-            <button className="secondary-action-btn" onClick={onPlayWithMouse} title="Play using mouse instead">
-              🖱️ Switch to Mouse
+            <button className="clean-secondary-btn" onClick={onPlayWithMouse}>
+              Use Mouse Instead
             </button>
           )}
 
-          <button className="secondary-action-btn" onClick={onBackToMenu}>
-            🏠 Back to Menu
+          <button className="clean-secondary-btn" onClick={onBackToMenu}>
+            Back to Menu
           </button>
         </div>
       </div>
@@ -99,18 +87,15 @@ interface CountdownOverlayProps {
 
 export const CountdownOverlay: React.FC<CountdownOverlayProps> = ({ count }) => {
   return (
-    <div className="overlay-screen countdown-overlay">
-      <div className="countdown-box">
-        <div className="countdown-ring">
-          <span className="countdown-num" key={count}>
-            {count > 0 ? count : 'GO!'}
-          </span>
-        </div>
-        <div className="countdown-label">
-          {count > 0 ? 'GET READY!' : 'CATCH THE FRUITS!'}
-        </div>
+    <div className="overlay-screen countdown-backdrop">
+      <div className="countdown-card">
+        <span className="countdown-digit" key={count}>
+          {count > 0 ? count : 'GO!'}
+        </span>
+        <span className="countdown-caption">
+          {count > 0 ? 'Get Ready' : 'Catch the items!'}
+        </span>
       </div>
     </div>
   );
 };
-

@@ -268,14 +268,11 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Footer Info / Controls Guide */}
-      <footer className="stall-footer">
-        <div className="footer-tip">
-          <span className="tip-badge">TIP</span>
-          <span>
-            🖐️ Move your hand in front of the webcam or slide your mouse horizontally to control the bucket!
-          </span>
-        </div>
+      {/* Short control instructions */}
+      <footer className="game-footer">
+        <p className="footer-instruction">
+          Move your hand in front of the camera or slide your mouse horizontally.
+        </p>
       </footer>
     </div>
   );

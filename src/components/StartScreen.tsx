@@ -8,89 +8,56 @@ interface StartScreenProps {
 export const StartScreen: React.FC<StartScreenProps> = ({ onStart, highScore }) => {
   return (
     <div className="overlay-screen">
-      <div className="modal-card">
-        {/* Stall Header Badge */}
-        <div className="stall-badge">
-          <span className="badge-dot"></span>
-          COLLEGE FEST GAMING STALL • HAND GESTURE READY
+      <div className="start-card">
+        <div className="start-header">
+          <span className="game-tag">Indie Arcade</span>
+          <h1 className="start-title">Gesture Catch</h1>
+          <p className="start-subtitle">
+            Catch the falling objects. Move your hand or use your mouse.
+          </p>
         </div>
 
-        {/* Title */}
-        <h1 className="game-title">
-          <span className="title-gradient">GESTURE CATCH</span>
-        </h1>
-        <p className="game-tagline">
-          Fast-paced arcade reflex challenge. Catch the goodies, avoid the bombs!
-        </p>
+        {/* Clean Point Values Strip */}
+        <div className="point-legend-strip">
+          <div className="legend-chip">
+            <span className="legend-emoji">🍎</span>
+            <span className="legend-label">Apple</span>
+            <span className="legend-pts pts-positive">+10</span>
+          </div>
+          <div className="legend-chip">
+            <span className="legend-emoji">🍌</span>
+            <span className="legend-label">Banana</span>
+            <span className="legend-pts pts-positive">+15</span>
+          </div>
+          <div className="legend-chip">
+            <span className="legend-emoji">⭐</span>
+            <span className="legend-label">Star</span>
+            <span className="legend-pts pts-bonus">+30</span>
+          </div>
+          <div className="legend-chip">
+            <span className="legend-emoji">💣</span>
+            <span className="legend-label">Bomb</span>
+            <span className="legend-pts pts-negative">-20</span>
+          </div>
+        </div>
 
-        {/* High Score Preview */}
+        {/* Controls Hint */}
+        <div className="control-note">
+          <span>🖐️ Move hand in front of camera</span>
+          <span className="note-divider">•</span>
+          <span>🖱️ Mouse controls ready</span>
+        </div>
+
         {highScore > 0 && (
-          <div className="banner-highscore">
-            🏆 Stall Record to Beat: <strong>{highScore} pts</strong>
+          <div className="start-highscore">
+            Best score: <strong>{highScore} pts</strong>
           </div>
         )}
 
-        {/* Scoring Rules Grid */}
-        <div className="rules-section">
-          <h2 className="section-title">Point System</h2>
-          <div className="items-grid">
-            <div className="item-pill apple-pill">
-              <span className="pill-emoji">🍎</span>
-              <div className="pill-info">
-                <span className="pill-name">Apple</span>
-                <span className="pill-pts positive">+10 pts</span>
-              </div>
-            </div>
-
-            <div className="item-pill banana-pill">
-              <span className="pill-emoji">🍌</span>
-              <div className="pill-info">
-                <span className="pill-name">Banana</span>
-                <span className="pill-pts positive">+15 pts</span>
-              </div>
-            </div>
-
-            <div className="item-pill star-pill">
-              <span className="pill-emoji">⭐</span>
-              <div className="pill-info">
-                <span className="pill-name">Golden Star</span>
-                <span className="pill-pts bonus">+30 pts</span>
-              </div>
-            </div>
-
-            <div className="item-pill bomb-pill">
-              <span className="pill-emoji">💣</span>
-              <div className="pill-info">
-                <span className="pill-name">Bomb</span>
-                <span className="pill-pts negative">-20 pts</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* How to Play */}
-        <div className="instructions-box">
-          <div className="instruction-step">
-            <span className="step-num">1</span>
-            <span>Wave your <strong>Hand</strong> left & right (or use <strong>Mouse</strong>) to slide the bucket.</span>
-          </div>
-          <div className="instruction-step">
-            <span className="step-num">2</span>
-            <span>Catch fruits & stars before they hit the ground. Avoid bombs!</span>
-          </div>
-          <div className="instruction-step">
-            <span className="step-num">3</span>
-            <span>You have <strong>60 Seconds</strong> on the clock to set the top stall score!</span>
-          </div>
-        </div>
-
-        {/* Big Start Button */}
-        <button className="primary-action-btn pulse-anim" onClick={onStart}>
-          <span className="btn-icon">🚀</span>
-          START GAME (60s)
+        <button className="clean-primary-btn" onClick={onStart}>
+          Start Game
         </button>
       </div>
     </div>
   );
 };
-

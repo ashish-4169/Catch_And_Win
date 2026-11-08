@@ -7,16 +7,17 @@ export const CANVAS_HEIGHT = 600;
 // Game timer in seconds
 export const GAME_DURATION_SECONDS = 60;
 
-// Bucket configuration
+// Bucket configuration - Clean modern indie aesthetic
 export const BUCKET_CONFIG = {
   width: 120,
   height: 48,
   bottomOffset: 25,
-  colorTop: '#4f46e5',
-  colorBottom: '#312e81',
-  rimColor: '#818cf8',
-  highlightColor: '#c7d2fe',
-  handleColor: '#a5b4fc',
+  colorTop: '#426B43',
+  colorBottom: '#315232',
+  rimColor: '#2A462B',
+  highlightColor: '#507E51',
+  handleColor: '#69926A',
+  badgeColor: '#E6EDE2',
 };
 
 // Item definitions
@@ -26,8 +27,8 @@ export const ITEM_CONFIGS: Record<ItemType, ItemConfig> = {
     name: 'Apple',
     points: 10,
     emoji: '🍎',
-    color: '#ef4444',
-    glowColor: 'rgba(239, 68, 68, 0.45)',
+    color: '#D9483B',
+    glowColor: 'rgba(217, 72, 59, 0.15)',
     radius: 22,
     spawnWeight: 40,
     speedMultiplier: 1.0,
@@ -37,8 +38,8 @@ export const ITEM_CONFIGS: Record<ItemType, ItemConfig> = {
     name: 'Banana',
     points: 15,
     emoji: '🍌',
-    color: '#eab308',
-    glowColor: 'rgba(234, 179, 8, 0.45)',
+    color: '#E5A93C',
+    glowColor: 'rgba(229, 169, 60, 0.15)',
     radius: 22,
     spawnWeight: 30,
     speedMultiplier: 1.15,
@@ -48,8 +49,8 @@ export const ITEM_CONFIGS: Record<ItemType, ItemConfig> = {
     name: 'Golden Star',
     points: 30,
     emoji: '⭐',
-    color: '#f59e0b',
-    glowColor: 'rgba(245, 158, 11, 0.7)',
+    color: '#F2B827',
+    glowColor: 'rgba(242, 184, 39, 0.2)',
     radius: 24,
     spawnWeight: 15,
     speedMultiplier: 1.35,
@@ -59,8 +60,8 @@ export const ITEM_CONFIGS: Record<ItemType, ItemConfig> = {
     name: 'Bomb',
     points: -20,
     emoji: '💣',
-    color: '#dc2626',
-    glowColor: 'rgba(220, 38, 38, 0.6)',
+    color: '#2D312E',
+    glowColor: 'rgba(45, 49, 46, 0.15)',
     radius: 23,
     spawnWeight: 20,
     speedMultiplier: 1.05,
